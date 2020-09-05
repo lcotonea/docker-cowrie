@@ -32,6 +32,7 @@ start: create-volumes
 	docker run -p 2222:2222/tcp \
 		   -p 2223:2223/tcp \
 		   -v cowrie-etc:/cowrie/cowrie-git/etc \
+		   -v cowrie-etc-import:/cowrie/cowrie-git/etc-import \
 		   -v cowrie-var:/cowrie/cowrie-git/var \
 		   -d \
 	           --name ${CONTAINERNAME} ${IMAGENAME}:${TAG}
@@ -71,3 +72,4 @@ ip:
 create-volumes:
 	docker volume create cowrie-var
 	docker volume create cowrie-etc
+	docker volume create cowrie-etc-import

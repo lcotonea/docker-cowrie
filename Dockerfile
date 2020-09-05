@@ -81,14 +81,11 @@ ENV STDOUT=yes
 
 USER ${COWRIE_USER}
 WORKDIR ${COWRIE_HOME}/cowrie-git
+ADD --chown=cowrie:cowrie entrypoint.sh /cowrie/entrypoint.sh
 
-# preserve .dist file when etc/ volume is mounted, even if the etc volume is mount in read only mode
+# preserve .dist file when etc/ volume is mounted, even if the etc volume is mount in read only mode and/or a secret mount volume
 VOLUME [ "/cowrie/cowrie-git/var", "/cowrie/cowrie-git/etc-import" ]
-RUN ln -s ${COWRIE_HOME}/cowrie-git/etc-import/* ${COWRIE_HOME}/cowrie-git/etc/
 
-RUN if [ -n $DEBUG ]; then ls -al ${COWRIE_HOME}/cowrie-git/etc/ ; cat ${COWRIE_HOME}/cowrie-git/etc/* ; fi
-
-
-ENTRYPOINT [ "cowrie" ]
+ENTRYPOINT [ "/cowrie/entrypoint.sh" ]
 CMD [ "start", "-n" ]
 EXPOSE 2222 2223
