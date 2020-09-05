@@ -82,10 +82,12 @@ ENV STDOUT=yes
 USER ${COWRIE_USER}
 WORKDIR ${COWRIE_HOME}/cowrie-git
 
-# preserve .dist file when etc/ volume is mounted
-RUN cp ${COWRIE_HOME}/cowrie-git/etc/cowrie.cfg.dist ${COWRIE_HOME}/cowrie-git
-VOLUME [ "/cowrie/cowrie-git/var", "/cowrie/cowrie-git/etc" ]
-RUN mv ${COWRIE_HOME}/cowrie-git/cowrie.cfg.dist ${COWRIE_HOME}/cowrie-git/etc
+# preserve .dist file when etc/ volume is mounted, even if the etc volume is mount in read only mode
+VOLUME [ "/cowrie/cowrie-git/var", "/cowrie/cowrie-git/etc-import" ]
+RUN ln -s ${COWRIE_HOME}/cowrie-git/etc-import/* ${COWRIE_HOME}/cowrie-git/etc/
+
+RUN if [ -n $DEBUG ]; then ls -al ${COWRIE_HOME}/cowrie-git/etc/ ; cat ${COWRIE_HOME}/cowrie-git/etc/* ; fi
+
 
 ENTRYPOINT [ "cowrie" ]
 CMD [ "start", "-n" ]
